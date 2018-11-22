@@ -141,7 +141,7 @@ joined_table %>%
   ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
   geom_jitter(colour = "red", size = 1)
 ggtitle("EGFR gene expression in smoker vs non-smoker 
-        individuals with stage 3A cancer")
+individuals with stage 3A cancer")
 ```
 ```{r EGFR gene expression in smoker vs non-smoker individuals with stage 3B cancer}
 joined_table %>%
@@ -150,7 +150,7 @@ joined_table %>%
   ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
   geom_jitter(colour = "red", size = 1)
 ggtitle("EGFR gene expression in smoker vs non-smoker 
-        individuals with stage 3B cancer")
+individuals with stage 3B cancer")
 ```
 ```{r EGFR gene expression in smoker vs non-smoker individuals with stage 4 cancer}
 joined_table %>%
