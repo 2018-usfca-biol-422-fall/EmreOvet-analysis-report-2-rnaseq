@@ -120,6 +120,47 @@ joined_table %>%
 
 **Figure 2**: Here we show another example figure caption.
 
+```{r EGFR gene expression in cancer tissues vs. normal tissues}
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  ggplot(aes(x = normal_or_cancer, y = counts_lengthscaledtpm)) +
+   geom_jitter(colour = "red", size = 1)
+  ggtitle("EGFR gene expression in cancer tissues vs. normal tissues")
+```
+```{r EGFR gene expression in cancer tissues with varying stages of cancer}
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  ggplot(aes(x = cancer_stage, y = counts_lengthscaledtpm)) +
+  geom_jitter(colour = "red", size = 1)
+ggtitle("EGFR gene expression in cancer tissues with varying stages of cancer")
+```
+```{r EGFR gene expression in smoker vs non-smoker individuals with stage 3A cancer}
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  filter(cancer_stage %in% c("3A")) %>%
+  ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
+  geom_jitter(colour = "red", size = 1)
+ggtitle("EGFR gene expression in smoker vs non-smoker individuals with stage 3A cancer")
+```
+```{r EGFR gene expression in smoker vs non-smoker individuals with stage 3B cancer}
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  filter(cancer_stage %in% c("3B")) %>%
+  ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
+  geom_jitter(colour = "red", size = 1)
+ggtitle("EGFR gene expression in smoker vs non-smoker individuals with stage 3B cancer")
+```
+```{r EGFR gene expression in smoker vs non-smoker individuals with stage 4 cancer}
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  filter(cancer_stage %in% c("4")) %>%
+  ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
+  geom_jitter(colour = "red", size = 1)
+ggtitle("EGFR gene expression in smoker vs non-smoker individuals with stage 4 cancer")
+```
+
+
+
 # Discussion
 
 Add around 1-2 pages interpreting your results and considering future directions one might take in analyzing these data.
