@@ -159,7 +159,7 @@ joined_table %>%
   ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
   geom_jitter(colour = "red", size = 1)
 ggtitle("EGFR gene expression in smoker vs non-smoker
-        individuals with stage 4 cancer")
+individuals with stage 4 cancer")
 ```
 
 
