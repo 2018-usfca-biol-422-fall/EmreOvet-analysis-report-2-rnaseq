@@ -11,7 +11,9 @@ csl: bioinformatics.csl
 
 # Introduction
 
-Add about 1 page here. Must cite at least 5 peer reviewed articles.
+Lung cancer is one of the major life threatining diseases among the other types of cancer as 
+it is the leading cancer site in males, comprising 17% of the total new cancer cases and 23% of the total cancer deaths [@murray1997mortality]. It is caused by a number of genetic and environmental effects, for instance, expression of EGFR has been described to occur in the majority of human carcinomas at high frequency as %50 to %70 of lung carcinomas 
+have been found to express EGFR [@normanno2006epidermal]. As an environmental effect, smoking is the leading cause for lung cancer as it is estimated that about 90% of male lung cancer deaths and 75%-80% of female lung cancer deaths in the United States each year are caused by smoking [@murray1997mortality]. In 2015, Li et al. conducted a research study where they explored gene expression profiles and identified genes that are shared or varied among the smoker and non-smoker individuals with lung cancer from the RNA-Seq data from paired normal and cancer tissues that was obtained from another study led by Seo et al.. As a result of this research study, Li et al. identified 2273 genes that had different levels of expression in non-smoker tumor vs. normal tissues and 3030 genes that had different levels of expression in the smoker tumor vs. normal tissues. Moreover, %68 of the identified genes were downregulated in non-smoker tumors whereas %70 of the identified genes were downregulated in smoker tumors. Furthermore, 175 of the identified genes had significantly different levels of expression between tumor samples from smoker and non-smoker patients. In the light of those findings, we decided to conduct a further research study by asking if there's a positive correlation between smoking and expression of EGFR gene. We hypothesized that there'd be a positive correlation between smoking and expression of EGFR gene because as we previously mentioned, both of these factors are regarded as main contributors for lung cancer, thus, it seems logical that high levels of smoking might lead to high levels of expression of EGFR gene. We believe that this is a remarkable topic to work on because if we can find correlation between smoking and expression of EGFR gene, we can develop special treatments for smoker lung cancer patients like treatment with EGFR kinase inhibitor gefitinib, which caused tumor regression in %27.5 of the lung cancer patients in Japan [@paez2004egfr] or treatment with EGFR kinase inhibitor erlotinib which can prolong survival in patients with non–small-cell lung cancer after first-line or second-line chemotherapy [@shepherd2005erlotinib]. In order to test out hypothesis, we'll generate several plots on EGFR gene expression using ggplot, the first plot would represent the expression of EGFR gene in cancer tissues vs. normal tissues to see whether or not there is a significant overexpression of EGFR gene in cancer tissues compared to normal tissues, the second plot would be the expression of EGFR gene in cancer tissues with varying stages of cancer to see whether or not expression of EGFR gene increases as the stage of cancer increase among the cancer tissues, the third, fourth and fifth plots would represent the expression of EGFR gene in smoker vs non-smoker individuals with stage 3A cancer, with stage 3B cancer and with stage 4 cancer to see whether or not there is a significant overexpression of EGFR gene in cancer samples from smoker patients with high  levels of cancer compared to non-smoker patients with high levels of cancer.
 
 # Methods
 
@@ -20,10 +22,27 @@ Add about 1 page here. Must cite at least 5 peer reviewed articles.
 Li et al. obtained the transcriptome sequencing data from a study of Korean researchers who 
 conducted transcriptome analysis of lung adenocarcinoma in order to identify the somatic 
 mutations and transcriptional variations associated with lung cancer [@seo2012transcriptional].
+The data was downloaded by Li et al. from Gene Expression Omnibus with accession number GSE40419.
+The tumor and paired normal tissue were sequenced for each patient and in total 14 billion paired-end sequence reads were obtained with average 101 bp in length. The RNA-Seq data from the
+study of Seo et al. originated from paired normal and tumor tissues from 68 cancer patients; 34
+of them were non-smokers, the other 34 were smokers and the smokers were further grouped by
+ever smokers and current smokers [@li2015rna]. Li et al. restricted analysis of the ever smokers
+to patients under 75 in order to ensure comparability in age ranges between the two groups. For 
+validation of genes identified in non-smoker group, independent RNA-seq data from six non-smoker
+patients, the age onset for whom varied from 44 to 70, were downloaded by Li et al. from Gene Expression Omnibus with accession number GSE37765.
+
+Li et al. conducted genotype calling of single nucleotide variants on 136 RNA-seq bam files from
+68 individuals to confirm the paired nature of RNA-Seq data from tumor and normal tissue. Pair-
+wise concordance rates were computed by Li et al. for all possible 9180 pairs including between individuals and among individual pairs. The concordance rate of genotypic values between individuals varied from 0.69 to 0.77 with mean 0.73, and for the within individual analysis, the
+concordance rates varied from 0.85 to 0.97 with mean 0.94 and thus, the paired nature of of RNA-Seq data from tumor and normal tissues was confirmed. Pair-end RNA-Seq reads were aligned by Li et al. to human genome assembly Ensembl GRCh37 by Tophat. Li et al. used HTSeq to count the 
+reads by genes and used R Bioconductor edgeR to perform the differential expresssion analysis. Li et al. applied a general linear model of lung tissue expression~smoking+smoking:patient+
+smoking:tissue to accommodate the multifactor design of the experiment and this model incorporated the main effect for smoking plus interactions with patients and tissues, thus allowing Li et al. to identify genes differentially expressed in tumor versus normal tissue in non-smoker or smoker patients, and genes that behave differently between smoker and non-smoker
+patients. Li et al. only kept tags that had at least 1 count per million in at least half of the sample size in the analysis to make sure there were sufficient counts for each gene in the test.
+Genes with Benjamin-Hochberg adjusted FDR<0.05 and absolute values of logFC greater than 1 were reported by Li et al. as significant rates. Li et al. conducted pathway analysis to infer the functional roles and relationships of the genes with varied expression in the analysis. Li et al. submitted logFC value of significant genes to Ingenuity Pathway Analysis for pathway analysis.
 
 ## Computational
 
-These are the methods that were used to process the sequencing data. Should probably be at least a half of a page. At a very minimum should include citations for biomartr, trimmomatic, and sailfish. Note that these three methods references don't count towards the five references you need to cite in the introduction.
+First, we started by downloading newest precompiled sra-toolkit binary from NCBI, untar and unzip it, then add toolkit programs to PATH. We downloded aspera in order to download files from NCBI rapidly and then installed it. Then, we ran this program from NCBI manually to configure download directory. After that, we excised column of sample run ids for downloading and downloaded target sra files from the file list using aspera ascp. Next, we installed Biomatr package from Bioconductor to use it to download a reference genome, transcripts and annotations for the human genome from NCBI RefSeq [@drost2017biomartr]. We converted paired-end sra files to fastq files by adding sra toolkit tools to PATH and by converting files in parallel using a loop. Then, we created index of kmers for sailfish quasi-aligner to quantift the abundance of previously annotated RNA isoforms from RNA-Seq data which required boost libraries [@patro2014sailfish]. After that, we ran fastqc on all fastq files and saved output to output dir using 86 threads. As the output saved, we trimmed paired end reads in parallel using a tool called trimmomatic, we set its parameters stricter than the defaults so that it would remove adapters, N bases, leading low quality bases and trailing low quality bases that have a quality below 4, trim any reads that drop below 20 in a window size of 4 and drop reads below the 36 bases long [@bolger2014trimmomatic]. Since there is a limited amount of threads that can use java at once, there remained a bunch of files that are not yet trimmed, so we further trimmed the paired end reads using trimmomatic. Next, we ran sailfish to count all reads from trimmed reads where both paired reads made it through Trimmomatic QC. We needed to construct a transcript to gene ID mapping table, for that, we first constructed non-redundant list of Genbank ID to Gene names, then grepped over first column in quant.sf files to find Genbank ID and after that added Gene name as second column, which would later got loaded into R. We accomplished this by going through each line of the input file one at a time, searching for the Genbank ID in the line of the input, then cutting out the full transcript ID for that match and by appending the gene name after it. After that, we installed biocLite from bioconductor and loaded the transcript to gene lookup table we constructed. We read in the SRA sample metadata table, then we read in and added appropriate column names for the metadata on the patients taken from the supplemental information of the original study. We removed the columns that we won't be using and recoded the different values in each column to make them easier to read for humans. Next, we constructed vector of paths to each of the sailfish quant files to read in and then added names to get sample names added to the constructed table. After that, we loaded in and summarized to make a single table summarized by gene and scale counts. Then, we builded the final melted table that includes all the counts for all the samples, by gene, joined to the two metadata tables. Finally, we builded raw abundance table, turned it into a data frame and joined it to the earlier table based on GeneName and Sample. In order to plot the data, we used ggplot.
 
 # Results
 
@@ -129,6 +148,8 @@ joined_table %>%
    geom_jitter(colour = "red", size = 1)
   ggtitle("EGFR gene expression in cancer tissues vs. normal tissues")
 ```
+**Figure 1**: Here, we can see that the EGFR expression in most of the cancer tissues is similar to the EGFR expression in normal tissues, they are all equal to or below 80 tpm. We'd expect the overall EGFR gene expression significantly higher in cancer tissues than in normal tissues. About 6 of the cancer tissues has a EGFR gene expression between 90 and 100 tpm, 3 cancer tissues between 100 and 120 tpm, 1 cancer tissue between 250-270 tpm, 1 cancer tissue between 400-450 tpm and 1 cancer tissue at 600 tpm.
+
 ```{r EGFR gene expression in cancer tissues with varying stages of cancer}
 joined_table %>%
   filter(genename %in% c("EGFR")) %>%
@@ -136,6 +157,8 @@ joined_table %>%
   geom_jitter(colour = "red", size = 1)
 ggtitle("EGFR gene expression in cancer tissues with varying stages of cancer")
 ```
+**Figure 2**: Here, we can see that the number of cancer tissue samples decreases as the stage of cancer increases. 
+
 ```{r EGFR gene expression in smoker vs non-smoker individuals with stage 3A cancer}
 joined_table %>%
   filter(genename %in% c("EGFR")) %>%
@@ -145,6 +168,8 @@ joined_table %>%
 ggtitle("EGFR gene expression in smoker vs non-smoker
 individuals with stage 3A cancer")
 ```
+**Figure 3**:
+
 ```{r EGFR gene expression in smoker vs non-smoker individuals with stage 3B cancer}
 joined_table %>%
   filter(genename %in% c("EGFR")) %>%
@@ -154,6 +179,8 @@ joined_table %>%
 ggtitle("EGFR gene expression in smoker vs non-smoker
 individuals with stage 3B cancer")
 ```
+**Figure 4**:
+
 ```{r EGFR gene expression in smoker vs non-smoker individuals with stage 4 cancer}
 joined_table %>%
   filter(genename %in% c("EGFR")) %>%
@@ -163,11 +190,11 @@ joined_table %>%
 ggtitle("EGFR gene expression in smoker vs non-smoker
 individuals with stage 4 cancer")
 ```
+**Figure 5**:
 
 
 
 # Discussion
 
-Add around 1-2 pages interpreting your results and considering future directions one might take in analyzing these data.
 
 # Sources Cited
