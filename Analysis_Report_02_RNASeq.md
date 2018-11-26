@@ -1,0 +1,151 @@
+Analysis Report 2: Your Title Here
+================
+Emre Ovet
+November 21, 2018
+
+*Overall, a single-spaced page is about 500 words. So if the guidelines say half of a page, think about writing around 250 words. You can use the wordcountaddin in RStudio to track your progress.*
+
+Introduction
+============
+
+Lung cancer is one of the major life threatening diseases among the other types of cancer as it is the leading cancer site in males, comprising 17% of the total new cancer cases and 23% of the total cancer deaths (Murray and Lopez, 1997). It is caused by a number of genetic and environmental effects, for instance, expression of EGFR has been described to occur in the majority of human carcinomas at high frequency as %50 to %70 of lung carcinomas have been found to express EGFR (Normanno *et al.*, 2006). As an environmental effect, smoking is the leading cause for lung cancer as it is estimated that about 90% of male lung cancer deaths and 75%-80% of female lung cancer deaths in the United States each year are caused by smoking (Murray and Lopez, 1997). In 2015, Li et al. conducted a research study where they explored gene expression profiles and identified genes that are shared or varied among the smoker and non-smoker individuals with lung cancer from the RNA-Seq data from paired normal and cancer tissues that was obtained from another study led by Seo et al.. As a result of this research study, Li et al. identified 2273 genes that had different levels of expression in non-smoker tumor vs. normal tissues and 3030 genes that had different levels of expression in the smoker tumor vs. normal tissues. Moreover, %68 of the identified genes were down regulated in non-smoker tumors whereas %70 of the identified genes were down regulated in smoker tumors. Furthermore, 175 of the identified genes had significantly different levels of expression between tumor samples from smoker and non-smoker patients. In the light of those findings, we decided to conduct a further research study by asking if there's a positive correlation between smoking and expression of EGFR gene. We hypothesized that there's be a positive correlation between smoking and expression of EGFR gene because as we previously mentioned, both of these factors are regarded as main contributors for lung cancer, thus, it seems logical that high levels of smoking might lead to high levels of expression of EGFR gene. We believe that this is a remarkable topic to work on because if we can find correlation between smoking and expression of EGFR gene, we can develop special treatments for smoker lung cancer patients like treatment with EGFR kinase inhibitor gefitinib, which caused tumor regression in %27.5 of the lung cancer patients in Japan (Paez *et al.*, 2004) or treatment with EGFR kinase inhibitor erlotinib which can prolong survival in patients with non–small-cell lung cancer after first-line or second-line chemotherapy (Shepherd *et al.*, 2005). In order to test out hypothesis, we'll generate several plots on EGFR gene expression using ggplot, the first plot would represent the expression of EGFR gene in cancer tissues vs. normal tissues to see whether or not there is a over expression of EGFR gene in cancer tissues compared to normal tissues, the second plot would be the expression of EGFR gene in cancer tissues with varying stages of cancer to see whether or not expression of EGFR gene increases as the stage of cancer increase among the cancer tissues, the third, fourth and fifth plots would represent the expression of EGFR gene in smoker vs non-smoker individuals with stage 3A cancer, with stage 3B cancer and with stage 4 cancer to see whether or not there is a over expression of EGFR gene in cancer samples from smoker patients with high levels of cancer compared to non-smoker patients with high levels of cancer.
+
+Methods
+=======
+
+Sample origin and sequencing
+----------------------------
+
+Li et al. obtained the transcriptome sequencing data from a study of Korean researchers who conducted transcriptome analysis of lung adenocarcinoma in order to identify the somatic mutations and transcriptional variations associated with lung cancer (Seo *et al.*, 2012). The data was downloaded by Li et al. from Gene Expression Omnibus with accession number GSE40419. The tumor and paired normal tissue were sequenced for each patient and in total 14 billion paired-end sequence reads were obtained with average 101 bp in length. The RNA-Seq data from the study of Seo et al. originated from paired normal and tumor tissues from 68 cancer patients; 34 of them were non-smokers, the other 34 were smokers and the smokers were further grouped by ever smokers and current smokers (Li *et al.*, 2015). Li et al. restricted analysis of the ever smokers to patients under 75 in order to ensure comparability in age ranges between the two groups. For validation of genes identified in non-smoker group, independent RNA-seq data from six non-smoker patients, the age onset for whom varied from 44 to 70, were downloaded by Li et al. from Gene Expression Omnibus with accession number GSE37765.
+
+Li et al. conducted genotype calling of single nucleotide variants on 136 RNA-seq bam files from 68 individuals to confirm the paired nature of RNA-Seq data from tumor and normal tissue. Pair- wise concordance rates were computed by Li et al. for all possible 9180 pairs including between individuals and among individual pairs. The concordance rate of genotypic values between individuals varied from 0.69 to 0.77 with mean 0.73, and for the within individual analysis, the concordance rates varied from 0.85 to 0.97 with mean 0.94 and thus, the paired nature of of RNA-Seq data from tumor and normal tissues was confirmed. Pair-end RNA-Seq reads were aligned by Li et al. to human genome assembly Ensembl GRCh37 by Tophat. Li et al. used HTSeq to count the reads by genes and used R Bioconductor edgeR to perform the differential expresssion analysis. Li et al. applied a general linear model of lung tissue expression~smoking+smoking:patient+ smoking:tissue to accommodate the multifactor design of the experiment and this model incorporated the main effect for smoking plus interactions with patients and tissues, thus allowing Li et al. to identify genes differentially expressed in tumor versus normal tissue in non-smoker or smoker patients, and genes that behave differently between smoker and non-smoker patients. Li et al. only kept tags that had at least 1 count per million in at least half of the sample size in the analysis to make sure there were sufficient counts for each gene in the test. Genes with Benjamin-Hochberg adjusted FDR&lt;0.05 and absolute values of logFC greater than 1 were reported by Li et al. as significant rates. Li et al. conducted pathway analysis to infer the functional roles and relationships of the genes with varied expression in the analysis. Li et al. submitted logFC value of significant genes to Ingenuity Pathway Analysis for pathway analysis.
+
+Computational
+-------------
+
+First, we started by downloading newest precompiled sra-toolkit binary from NCBI, untar and unzip it, then add toolkit programs to PATH. We downloded aspera in order to download files from NCBI rapidly and then installed it. Then, we ran this program from NCBI manually to configure download directory. After that, we excised column of sample run ids for downloading and downloaded target sra files from the file list using aspera ascp. Next, we installed Biomatr package from Bioconductor to use it to download a reference genome, transcripts and annotations for the human genome from NCBI RefSeq (Drost and Paszkowski, 2017). We converted paired-end sra files to fastq files by adding sra toolkit tools to PATH and by converting files in parallel using a loop. Then, we created index of kmers for sailfish quasi-aligner to quantift the abundance of previously annotated RNA isoforms from RNA-Seq data which required boost libraries (Patro *et al.*, 2014). After that, we ran fastqc on all fastq files and saved output to output dir using 86 threads. As the output saved, we trimmed paired end reads in parallel using a tool called trimmomatic, we set its parameters stricter than the defaults so that it would remove adapters, N bases, leading low quality bases and trailing low quality bases that have a quality below 4, trim any reads that drop below 20 in a window size of 4 and drop reads below the 36 bases long (Bolger *et al.*, 2014). Since there is a limited amount of threads that can use java at once, there remained a bunch of files that are not yet trimmed, so we further trimmed the paired end reads using trimmomatic. Next, we ran sailfish to count all reads from trimmed reads where both paired reads made it through Trimmomatic QC. We needed to construct a transcript to gene ID mapping table, for that, we first constructed non-redundant list of Genbank ID to Gene names, then grepped over first column in quant.sf files to find Genbank ID and after that added Gene name as second column, which would later got loaded into R. We accomplished this by going through each line of the input file one at a time, searching for the Genbank ID in the line of the input, then cutting out the full transcript ID for that match and by appending the gene name after it. After that, we installed biocLite from bioconductor and loaded the transcript to gene lookup table we constructed. We read in the SRA sample metadata table, then we read in and added appropriate column names for the metadata on the patients taken from the supplemental information of the original study. We removed the columns that we won't be using and recoded the different values in each column to make them easier to read for humans. Next, we constructed vector of paths to each of the sailfish quant files to read in and then added names to get sample names added to the constructed table. After that, we loaded in and summarized to make a single table summarized by gene and scale counts. Then, we builded the final melted table that includes all the counts for all the samples, by gene, joined to the two metadata tables. Finally, we builded raw abundance table, turned it into a data frame and joined it to the earlier table based on GeneName and Sample. In order to plot the data, we used ggplot.
+
+Results
+=======
+
+We found out that the average expression of EGFR gene is slightly higher in normal tissues than in cancer tissues which is not expected. Moreover, the average expression of EGFR gene is not in an increasing order when moved from low levels of cancer to the high levels of cancer and we also found out that the cancer tissues with stage 4 cancer has the lowest average expression of EGFR gene which is surprising. When we analyzed the cancer tissue samples from patients with different status of smoking and with high levels of cancer, we found out that the current and previous smokers have higher expression of EGFR gene than the non-smoker patients, however, we couldn't obtain information about the relationship between smoking and EGFR gene expression in 3B cancer since there were no smoker patients in that group. Overall, we can conclude that our hypothesis is true.
+
+| gender | genename |  mean\_count|
+|:-------|:---------|------------:|
+| male   | EEF1A1   |    192985.07|
+| female | EEF1A1   |    180576.95|
+| female | SFTPB    |    145106.22|
+| male   | SFTPA2   |    139706.77|
+| male   | SFTPB    |    131689.14|
+| female | SFTPA2   |    129754.12|
+| female | SFTPC    |    121279.39|
+| male   | SFTPC    |    112060.50|
+| female | SFTPA1   |    103648.69|
+| male   | SFTPA1   |    100325.53|
+| male   | FTL      |     86060.02|
+| male   | RNA28S5  |     75812.40|
+| female | RNA28S5  |     75363.40|
+| male   | MIR6723  |     73176.55|
+| male   | CD74     |     70990.84|
+
+**Table 1**: The most highly expressed genes in both genders included *SFTPB* and *EEF1A1*.
+
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/make-barplot-of-highly-expressed-genes-1.png)
+
+**Figure 1**: Here we show an example figure caption.
+
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/make-boxplot-of-highly-expressed-genes-1.png)
+
+**Figure 2**: Here we show another example figure caption.
+
+``` r
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  ggplot(aes(x = normal_or_cancer, y = counts_lengthscaledtpm)) +
+   geom_boxplot() +
+  xlab("Normal or Cancer Tissues") +
+    ylab("Scaled read counts per gene") +
+  ggtitle("EGFR gene expression in cancer tissues vs. normal tissues")
+```
+
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20cancer%20tissues%20vs.%20normal%20tissues-1.png) **Figure 1**: Here, we can see that the median value for EGFR expression in cancer tissues is slightly lower than the median value for EGFR gene expression in normal tissues which is not expected. The upper quarterly value for EGFR gene expression in cancer tissues seems to be equal to the upper quarterly value for EGFR gene expression in normal tissues and the lower quarterly value of cancer tissues is lower than the lower quarterly value of normal tissues. There are 6 outliers that has significantly higher expression of EGFR gene in cancer tissues and 1 in normal tissues.
+
+``` r
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  ggplot(aes(x = cancer_stage, y = counts_lengthscaledtpm)) +
+   geom_boxplot() +
+  xlab("Cancer Stage") +
+    ylab("Scaled read counts per gene") +
+ggtitle("EGFR gene expression in cancer tissues with varying stages of cancer")
+```
+
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20cancer%20tissues%20with%20varying%20stages%20of%20cancer-1.png) **Figure 2**: Here, we can see that the median value for expression of EGFR is not in increasing order from low levels of cancer to the high levels of cancer which is not expected. All the different cancer stage groups seems to have a similar value for the EGFR gene expression with stage 4 having the least median value which is surprising. There are also some cancer tissue samples that have an unidentified stage of cancer.
+
+``` r
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  filter(cancer_stage %in% c("3A")) %>%
+  ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
+  geom_boxplot() +
+  xlab("Gene Name") +
+    ylab("Smoking Status") +
+ggtitle("EGFR gene expression in smoker vs non-smoker
+individuals with stage 3A cancer")
+```
+
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%203A%20cancer-1.png) **Figure 3**: Here, we can see that the median value for EGFR gene expression in tissue samples from 3A stage cancer patients that is currently smoking or previously smoked is higher than the EGFR gene expression in tissue samples from 3A stage cancer patients that never smoked. The average expression value seems to be around 20 tpm for the non-smoker and 30 tpm for the smokers which makes a 1.5-fold increase. One smoker tissue sample has a EGFR gene expression at 600 tpm which is significantly higher than the rest. There are also some cancer tissues that have unidentified smoking status.
+
+``` r
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  filter(cancer_stage %in% c("3B")) %>%
+  ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
+   geom_boxplot() +
+  xlab("Smoking Status") +
+    ylab("Scaled read counts per gene") +
+ggtitle("EGFR gene expression in smoker vs non-smoker
+individuals with stage 3B cancer")
+```
+
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%203B%20cancer-1.png) **Figure 4**: Here, we can see that there are no stage 3B cancer patients that currently smoking or previously smoked in our data. One of the non-smoker tissue samples has a very high EGFR expression level between 400-450 tpm which is not expected.
+
+``` r
+joined_table %>%
+  filter(genename %in% c("EGFR")) %>%
+  filter(cancer_stage %in% c("4")) %>%
+  ggplot(aes(x = smoking_status, y = counts_lengthscaledtpm)) +
+   geom_boxplot() +
+  xlab("Smoking Status") +
+    ylab("Scaled read counts per gene") +
+ggtitle("EGFR gene expression in smoker vs non-smoker
+individuals with stage 4 cancer")
+```
+
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%204%20cancer-1.png) **Figure 5**: Here, we can see that there are no stage 4 cancer patients that currently smoking. Moreover, the median value for EGFR gene expression in tissue samples from previously smoked patients is higher than that of non-smoker patients overall. The average expression value seems to be around 12 tpm for non-smokers and 24 tpm for smokers which equals to a 2-fold increase.
+
+Discussion
+==========
+
+Returning back to our central question "Is there a positive correlation between smoking and expression of EGFR gene", we succeed in finding a higher expression level of the EGFR gene in the tissue samples from the high level lung cancer patients that is currently smoking or previously smoked compared to the tissue samples from the high level lung cancer patients that never smoked before. However, the difference seems to be 1.5-fold increase in stage 3A cancer and 2-fold increase in stage 4 cancer which is not as high as we thought it'd be. Another unexpected finding we obtained is that the average EGFR gene expression in the cancer tissues is slightly lower than the normal genes. Since we thought that the over expression of EGFR gene is one of the major causes for lung cancer, we'd expect the overall expression in the cancer tissues to be higher than the normal tissues. This finding demonstrated that the over expression of EGFR gene is in fact not a major cause for lung cancer. The other unexpected finding we obtained is that the expression of EGFR gene was not in an increasing order as we moved from low levels of cancer to the high levels of cancer. Moreover, the average expression of EGFR gene was the lowest in the stage 4 cancer tissue samples. There is a certain level of uncertainty in this finding because the number of samples in the higher stages of cancer is lower than the low stages of cancer, thus, the cancer stage groups are not well presented. Nevertheless, this finding correlates with our previous finding so we might conclude that over expression is not a major cause of lung cancer by itself but rather a side effect of lung cancer that shows up in certain cases. By analyzing our finding on the high levels of EGFR expression in samples from the smoker patients with high levels of cancer, we can conclude that our hypothesis is true even though the fold increases are not significantly high. This finding can lead to further research studies where the effectiveness of treatments with EGFR kinase inhibitors gefitinib and erlotinib can be compared between a number of smoker and non-smoker lung cancer patients. If a higher effectiveness can be observed in the smoker patients, then we can promote the treatment of smoker lung cancer patients with EGFR kinase inhibitors which would also promote further research on the development of other types of EGFR kinase inhibitors that would have less side effects and would cost less. Also, this research study can be repeated with higher numbers of smoker and non-smoker lung cancer patients that would form equally populated cancer stage groups, so that more reliable results might be obtained for both low stages of cancer and high stages of cancer.
+
+Sources Cited
+=============
+
+Bolger,A.M. *et al.* (2014) Trimmomatic: A flexible trimmer for illumina sequence data. *Bioinformatics*, **30**, 2114–2120.
+
+Drost,H.-G. and Paszkowski,J. (2017) Biomartr: Genomic data retrieval with r. *Bioinformatics*, **33**, 1216–1217.
+
+Li,Y. *et al.* (2015) RNA-seq analysis of lung adenocarcinomas reveals different gene expression profiles between smoking and nonsmoking patients. *Tumor Biology*, **36**, 8993–9003.
+
+Murray,C.J. and Lopez,A.D. (1997) Mortality by cause for eight regions of the world: Global burden of disease study. *The lancet*, **349**, 1269–1276.
+
+Normanno,N. *et al.* (2006) Epidermal growth factor receptor (egfr) signaling in cancer. *Gene*, **366**, 2–16.
+
+Paez,J.G. *et al.* (2004) EGFR mutations in lung cancer: Correlation with clinical response to gefitinib therapy. *Science*, **304**, 1497–1500.
+
+Patro,R. *et al.* (2014) Sailfish enables alignment-free isoform quantification from rna-seq reads using lightweight algorithms. *Nature biotechnology*, **32**, 462.
+
+Seo,J.-S. *et al.* (2012) The transcriptional landscape and mutational profile of lung adenocarcinoma. *Genome research*, **22**, 2109–2119.
+
+Shepherd,F.A. *et al.* (2005) Erlotinib in previously treated non–small-cell lung cancer. *New England Journal of Medicine*, **353**, 123–132.
