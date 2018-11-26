@@ -66,7 +66,9 @@ joined_table %>%
   ggtitle("EGFR gene expression in cancer tissues vs. normal tissues")
 ```
 
-![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20cancer%20tissues%20vs.%20normal%20tissues-1.png) **Figure 1**: Here, we can see that the median value for EGFR expression in cancer tissues is slightly lower than the median value for EGFR gene expression in normal tissues which is not expected. The upper quarterly value for EGFR gene expression in cancer tissues seems to be equal to the upper quarterly value for EGFR gene expression in normal tissues and the lower quarterly value of cancer tissues is lower than the lower quarterly value of normal tissues. There are 6 outliers that has significantly higher expression of EGFR gene in cancer tissues and 1 in normal tissues.
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20cancer%20tissues%20vs.%20normal%20tissues-1.png)
+
+**Figure 1**: Here, we can see that the median value for EGFR expression in cancer tissues is slightly lower than the median value for EGFR gene expression in normal tissues which is not expected. The upper quarterly value for EGFR gene expression in cancer tissues seems to be equal to the upper quarterly value for EGFR gene expression in normal tissues and the lower quarterly value of cancer tissues is lower than the lower quarterly value of normal tissues. There are 6 outliers that has significantly higher expression of EGFR gene in cancer tissues and 1 in normal tissues.
 
 ``` r
 joined_table %>%
@@ -78,7 +80,9 @@ joined_table %>%
 ggtitle("EGFR gene expression in cancer tissues with varying stages of cancer")
 ```
 
-![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20cancer%20tissues%20with%20varying%20stages%20of%20cancer-1.png) **Figure 2**: Here, we can see that the median value for expression of EGFR is not in increasing order from low levels of cancer to the high levels of cancer which is not expected. All the different cancer stage groups seems to have a similar value for the EGFR gene expression with stage 4 having the least median value which is surprising. There are also some cancer tissue samples that have an unidentified stage of cancer.
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20cancer%20tissues%20with%20varying%20stages%20of%20cancer-1.png)
+
+**Figure 2**: Here, we can see that the median value for expression of EGFR is not in increasing order from low levels of cancer to the high levels of cancer which is not expected. All the different cancer stage groups seems to have a similar value for the EGFR gene expression with stage 4 having the least median value which is surprising. There are also some cancer tissue samples that have an unidentified stage of cancer.
 
 ``` r
 joined_table %>%
@@ -92,7 +96,9 @@ ggtitle("EGFR gene expression in smoker vs non-smoker
 individuals with stage 3A cancer")
 ```
 
-![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%203A%20cancer-1.png) **Figure 3**: Here, we can see that the median value for EGFR gene expression in tissue samples from 3A stage cancer patients that is currently smoking or previously smoked is higher than the EGFR gene expression in tissue samples from 3A stage cancer patients that never smoked. The average expression value seems to be around 20 tpm for the non-smoker and 30 tpm for the smokers which makes a 1.5-fold increase. One smoker tissue sample has a EGFR gene expression at 600 tpm which is significantly higher than the rest. There are also some cancer tissues that have unidentified smoking status.
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%203A%20cancer-1.png)
+
+**Figure 3**: Here, we can see that the median value for EGFR gene expression in tissue samples from 3A stage cancer patients that is currently smoking or previously smoked is higher than the EGFR gene expression in tissue samples from 3A stage cancer patients that never smoked. The average expression value seems to be around 20 tpm for the non-smoker and 30 tpm for the smokers which makes a 1.5-fold increase. One smoker tissue sample has a EGFR gene expression at 600 tpm which is significantly higher than the rest. There are also some cancer tissues that have unidentified smoking status.
 
 ``` r
 joined_table %>%
@@ -106,7 +112,9 @@ ggtitle("EGFR gene expression in smoker vs non-smoker
 individuals with stage 3B cancer")
 ```
 
-![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%203B%20cancer-1.png) **Figure 4**: Here, we can see that there are no stage 3B cancer patients that currently smoking or previously smoked in our data. One of the non-smoker tissue samples has a very high EGFR expression level between 400-450 tpm which is not expected.
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%203B%20cancer-1.png)
+
+**Figure 4**: Here, we can see that there are no stage 3B cancer patients that currently smoking or previously smoked in our data. One of the non-smoker tissue samples has a very high EGFR expression level between 400-450 tpm which is not expected.
 
 ``` r
 joined_table %>%
@@ -120,7 +128,9 @@ ggtitle("EGFR gene expression in smoker vs non-smoker
 individuals with stage 4 cancer")
 ```
 
-![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%204%20cancer-1.png) **Figure 5**: Here, we can see that there are no stage 4 cancer patients that currently smoking. Moreover, the median value for EGFR gene expression in tissue samples from previously smoked patients is higher than that of non-smoker patients overall. The average expression value seems to be around 12 tpm for non-smokers and 24 tpm for smokers which equals to a 2-fold increase.
+![](Analysis_Report_02_RNASeq_files/figure-markdown_github/EGFR%20gene%20expression%20in%20smoker%20vs%20non-smoker%20individuals%20with%20stage%204%20cancer-1.png)
+
+**Figure 5**: Here, we can see that there are no stage 4 cancer patients that currently smoking. Moreover, the median value for EGFR gene expression in tissue samples from previously smoked patients is higher than that of non-smoker patients overall. The average expression value seems to be around 12 tpm for non-smokers and 24 tpm for smokers which equals to a 2-fold increase.
 
 Discussion
 ==========
